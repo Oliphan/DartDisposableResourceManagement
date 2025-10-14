@@ -4,7 +4,7 @@ import 'package:disposable_resource_management/disposable_resource_management.da
 /// access to it via tokens.
 /// When the first token is obtained the resource will be loaded.
 /// When the last token is disposed the resource will be released.
-class ResourceManager<inout T> {
+class ResourceManager<T> {
   final Set<Disposable> _tokens;
   final T Function() _loadResource;
   final void Function(T) _releaseResource;
@@ -35,11 +35,11 @@ class ResourceManager<inout T> {
   }
 
   void _releaseToken(Disposable token) {
-        _tokens.remove(token);
-        if (_tokens.isNotEmpty) {
-          return;
-        }
-        _releaseResource(_resource as T);
-        _resource = null;
-      }
+    _tokens.remove(token);
+    if (_tokens.isNotEmpty) {
+      return;
+    }
+    _releaseResource(_resource as T);
+    _resource = null;
+  }
 }

@@ -5,7 +5,7 @@ import 'package:synchronized/synchronized.dart';
 /// access to it via tokens.
 /// When the first token is obtained the resource will be loaded.
 /// When the last token is disposed the resource will be released.
-class AsyncResourceManager<inout T> {
+class AsyncResourceManager<T> {
   final Set<AsyncDisposable> _tokens;
   final Future<T> Function() _loadResource;
   final Future<void> Function(T) _releaseResource;
