@@ -9,7 +9,7 @@ class AsyncResourceManager<inout T> {
   final Set<AsyncDisposable> _tokens;
   final Future<T> Function() _loadResource;
   final Future<void> Function(T) _releaseResource;
-  final Lock loadReleaseLock = Lock();
+  final Lock _loadReleaseLock = Lock();
 
   T? _resource;
 
@@ -24,7 +24,7 @@ class AsyncResourceManager<inout T> {
 
   /// Obtains an access token for the resource, loading it if necessary.
   Future<AsyncResourceToken<T>> obtainToken() =>
-      loadReleaseLock.synchronized(() async {
+      _loadReleaseLock.synchronized(() async {
         _resource ??= await _loadResource();
 
         final token = AsyncResourceToken<T>(
@@ -38,7 +38,7 @@ class AsyncResourceManager<inout T> {
       });
 
   Future<void> _releaseToken(AsyncDisposable token) =>
-      loadReleaseLock.synchronized(() async {
+      _loadReleaseLock.synchronized(() async {
         _tokens.remove(token);
         if (_tokens.isNotEmpty) {
           return;
