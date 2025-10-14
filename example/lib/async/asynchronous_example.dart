@@ -80,14 +80,14 @@ void main() async {
   // Finally, we can use an AsyncResourceManager to manage the obtaining and
   // release of resources for us via tokens, similar to how reference counters
   // work in languages like C++.
-  final resource = AsyncResourceManager<SomeFFIWrapper>(
+  final resourceManager = AsyncResourceManager<SomeFFIWrapper>(
     loadResource: () => SomeFFIWrapper.create(ffi),
     releaseResource: (wrapper) => wrapper.disposeAsync(),
   );
 
   // The resource gets obtained on the first obtainToken() call.
-  final service1 = SomeService(await resource.obtainToken());
-  final service2 = SomeService(await resource.obtainToken());
+  final service1 = SomeService(await resourceManager.obtainToken());
+  final service2 = SomeService(await resourceManager.obtainToken());
 
   await service1.doSomeServiceThing();
   await service2.doSomeServiceThing();
@@ -96,12 +96,12 @@ void main() async {
   // un-disposed token.
   await service1.disposeAsync();
 
-  // The resource is now de-allocated when service2's token gets disposed.
+  // The resource is now released when service2's token gets disposed.
   await service2.disposeAsync();
 
   // This obtains the resource again so service3 can do its thing.
-  final service3 = SomeService(await resource.obtainToken());
+  final service3 = SomeService(await resourceManager.obtainToken());
 
-  // The resource gets de-allocated again.
+  // The resource gets released again.
   await service3.disposeAsync();
 }

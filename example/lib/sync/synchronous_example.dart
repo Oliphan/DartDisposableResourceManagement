@@ -71,14 +71,14 @@ void main() {
   // Finally, we can use a ResourceManager to manage the obtaining and release
   // of resources for us via tokens, similar to how reference counters work in
   // languages like C++.
-  final resource = ResourceManager<SomeFFIWrapper>(
+  final resourceManager = ResourceManager<SomeFFIWrapper>(
     loadResource: () => SomeFFIWrapper(ffi),
     releaseResource: (wrapper) => wrapper.dispose(),
   );
 
   // The resource gets obtained on the first obtainToken() call.
-  final service1 = SomeService(resource.obtainToken());
-  final service2 = SomeService(resource.obtainToken());
+  final service1 = SomeService(resourceManager.obtainToken());
+  final service2 = SomeService(resourceManager.obtainToken());
 
   service1.doSomeServiceThing();
   service2.doSomeServiceThing();
@@ -87,12 +87,12 @@ void main() {
   // un-disposed token.
   service1.dispose();
 
-  // The resource is now de-allocated when service2's token gets disposed.
+  // The resource is now released when service2's token gets disposed.
   service2.dispose();
 
   // This obtains the resource again so service3 can do its thing.
-  final service3 = SomeService(resource.obtainToken());
+  final service3 = SomeService(resourceManager.obtainToken());
 
-  // The resource gets de-allocated again.
+  // The resource gets released again.
   service3.dispose();
 }
