@@ -1,3 +1,8 @@
+## 2.0.2
+
+- Reduced meta package dependency version to 1.16.0 to fix compatibility with
+flutter sdk
+
 ## 2.0.1
 
 - Updated examples.
