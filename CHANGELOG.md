@@ -1,7 +1,13 @@
+## 3.0.0
+
+- \[Breaking\] Added ability to propagate access via tokens. `ResourceToken` and
+  `AsyncResourceToken` now require a `propagator` constructor paramater to
+  facilitate this.
+
 ## 2.0.2
 
 - Reduced meta package dependency version to 1.16.0 to fix compatibility with
-flutter sdk
+  flutter sdk
 
 ## 2.0.1
 

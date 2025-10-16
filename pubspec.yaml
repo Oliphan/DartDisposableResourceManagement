@@ -1,6 +1,6 @@
 name: disposable_resource_management
 description: Provides base types and utilities for managing the loading and disposal of resources.
-version: 2.0.2
+version: 3.0.0
 repository: https://github.com/Oliphan/DartDisposableResourceManagement
 
 environment:
