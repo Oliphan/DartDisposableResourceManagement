@@ -27,6 +27,7 @@ class ResourceManager<T> {
     final token = ResourceToken<T>(
       resource: _resource as T,
       onDispose: _releaseToken,
+      propagator: obtainToken,
     );
 
     _tokens.add(token);

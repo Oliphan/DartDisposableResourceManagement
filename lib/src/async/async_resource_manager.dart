@@ -30,6 +30,7 @@ class AsyncResourceManager<T> {
         final token = AsyncResourceToken<T>(
           resource: _resource as T,
           onDispose: _releaseToken,
+          propagator: obtainToken,
         );
 
         _tokens.add(token);
