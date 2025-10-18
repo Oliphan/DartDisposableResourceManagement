@@ -85,11 +85,22 @@ void main() async {
 
   // The resource is now released when service2's token gets disposed.
   await service2.disposeAsync();
+  
+  // This obtains the resource again
+  final token1 = await resourceManager.obtainToken();
 
-  // This obtains the resource again so service3 can do its thing.
-  final service3 = SomeService(await resourceManager.obtainToken());
+  // We can also propagate the token to get another token.
+  // This is done synchronously, since propagation isn't allowed for disposed
+  // tokens and therefore does not require loading the resource as it is
+  // guaranteed to already be loaded.
+  final token2 = token1.propagate();
 
-  // The resource gets released again.
-  await service3.disposeAsync();
+  // The resource will not be released yet because the propagated token2 still
+  // is not disposed.
+  await token1.disposeAsync();
+
+  // The resource gets released again when all tokens for the resource are
+  // disposed.
+  await token2.disposeAsync();
 }
 ```
