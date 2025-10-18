@@ -31,8 +31,8 @@ class AsyncResourceToken<T> extends AsyncDisposeToken {
   static Future<AsyncResourceToken<T>> create<T>({
     required Future<T> Function() loadResource,
     required Future<void> Function(T) releaseResource,
-  }) => AsyncResourceManager<T>(
-    loadResource: loadResource,
+  }) async => AsyncRootResourceToken<T>(
+    resource: await loadResource(),
     releaseResource: releaseResource,
-  ).obtainToken();
+  );
 }
