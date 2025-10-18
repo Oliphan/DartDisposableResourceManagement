@@ -2,6 +2,7 @@
 
 - \[BREAKING\] Updated `AsyncResourceToken` propagation to be synchronous as it
   does not load or dispose.
+- Updated exampless to include propagation
 
 ## 3.0.0
 
