@@ -26,17 +26,20 @@ class AsyncResourceManager<T> {
   Future<AsyncResourceToken<T>> obtainToken() =>
       _loadReleaseLock.synchronized(() async {
         _resource ??= await _loadResource();
-
-        final token = AsyncResourceToken<T>(
-          resource: _resource as T,
-          onDispose: _releaseToken,
-          propagator: obtainToken,
-        );
-
-        _tokens.add(token);
-
-        return token;
+        return _createToken();
       });
+
+  AsyncResourceToken<T> _createToken() {
+    final token = AsyncResourceToken<T>(
+      resource: _resource as T,
+      onDispose: _releaseToken,
+      propagator: _createToken,
+    );
+
+    _tokens.add(token);
+
+    return token;
+  }
 
   Future<void> _releaseToken(AsyncDisposable token) =>
       _loadReleaseLock.synchronized(() async {
