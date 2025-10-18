@@ -23,11 +23,14 @@ class ResourceManager<T> {
   /// Obtains an access token for the resource, loading it if necessary.
   ResourceToken<T> obtainToken() {
     _resource ??= _loadResource();
+    return _createToken();
+  }
 
+  ResourceToken<T> _createToken() {
     final token = ResourceToken<T>(
       resource: _resource as T,
       onDispose: _releaseToken,
-      propagator: obtainToken,
+      propagator: _createToken,
     );
 
     _tokens.add(token);
