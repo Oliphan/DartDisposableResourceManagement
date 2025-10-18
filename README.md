@@ -8,7 +8,7 @@ resources, for example when working with packages that do so via
 Just add following dependencies to your `pubspec.yaml`:
 ```yaml
 dependencies:
-  disposable_resource_management: ^2.0.0
+  disposable_resource_management: ^4.0.0
 ```
 
 ## Usage
