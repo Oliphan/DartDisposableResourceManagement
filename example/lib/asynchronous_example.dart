@@ -1,3 +1,6 @@
+// Ignored avoiding print for example files
+// ignore_for_file: avoid_print
+
 import 'package:disposable_resource_management/disposable_resource_management.dart';
 import 'package:meta/meta.dart';
 
@@ -82,8 +85,14 @@ void main() async {
   // release of resources for us via tokens, similar to how reference counters
   // work in languages like C++.
   final resourceManager = AsyncResourceManager<SomeAsyncFFIWrapper>(
-    loadResource: () => SomeAsyncFFIWrapper.create(ffi),
-    releaseResource: (wrapper) => wrapper.disposeAsync(),
+    loadResource: () {
+      print('Obtaining resource...');
+      return SomeAsyncFFIWrapper.create(ffi);
+    },
+    releaseResource: (wrapper) {
+      print('Releasing resource...');
+      return wrapper.disposeAsync();
+    },
   );
 
   // The resource gets obtained on the first obtainToken() call.
@@ -100,9 +109,20 @@ void main() async {
   // The resource is now released when service2's token gets disposed.
   await service2.disposeAsync();
 
-  // This obtains the resource again so service3 can do its thing.
-  final service3 = SomeAsyncService(await resourceManager.obtainToken());
+  // This obtains the resource again
+  final token1 = await resourceManager.obtainToken();
 
-  // The resource gets released again.
-  await service3.disposeAsync();
+  // We can also propagate the token to get another token.
+  // This is done synchronously, since propagation isn't allowed for disposed
+  // tokens and therefore does not require loading the resource as it is
+  // guaranteed to already be loaded.
+  final token2 = token1.propagate();
+
+  // The resource will not be released yet because the propagated token2 still
+  // is not disposed.
+  await token1.disposeAsync();
+
+  // The resource gets released again when all tokens for the resource are
+  // disposed.
+  await token2.disposeAsync();
 }

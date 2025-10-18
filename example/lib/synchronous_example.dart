@@ -1,3 +1,6 @@
+// Ignored avoiding print for example files
+// ignore_for_file: avoid_print
+
 import 'package:disposable_resource_management/disposable_resource_management.dart';
 import 'package:meta/meta.dart';
 
@@ -72,8 +75,14 @@ void main() {
   // of resources for us via tokens, similar to how reference counters work in
   // languages like C++.
   final resourceManager = ResourceManager<SomeFFIWrapper>(
-    loadResource: () => SomeFFIWrapper(ffi),
-    releaseResource: (wrapper) => wrapper.dispose(),
+    loadResource: () {
+      print('Obtaining resource...');
+      return SomeFFIWrapper(ffi);
+    },
+    releaseResource: (wrapper) {
+      print('Releasing resource...');
+      wrapper.dispose();
+    },
   );
 
   // The resource gets obtained on the first obtainToken() call.
@@ -90,9 +99,17 @@ void main() {
   // The resource is now released when service2's token gets disposed.
   service2.dispose();
 
-  // This obtains the resource again so service3 can do its thing.
-  final service3 = SomeService(resourceManager.obtainToken());
+  // This obtains the resource again
+  final token1 = resourceManager.obtainToken();
 
-  // The resource gets released again.
-  service3.dispose();
+  // We can also propagate the token to get another token
+  final token2 = token1.propagate();
+
+  // The resource will not be released yet because the propagated token2 still
+  // is not disposed.
+  token1.dispose();
+
+  // The resource gets released again when all tokens for the resource are
+  // disposed.
+  token2.dispose();
 }
