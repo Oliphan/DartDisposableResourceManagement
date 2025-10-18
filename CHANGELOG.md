@@ -1,3 +1,8 @@
+## 4.0.0
+
+- \[BREAKING\] Updated `AsyncResourceToken` propagation to be synchronous as it
+  does not load or dispose.
+
 ## 3.0.0
 
 - \[Breaking\] Added ability to propagate access via tokens. `ResourceToken` and
