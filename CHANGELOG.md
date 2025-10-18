@@ -1,3 +1,14 @@
+## 4.1.0
+
+- Updated README setup instructions to install ^4.0.0
+- Added token propagation example to README
+- Added `AsyncRootResourceToken` and `RootResourceToken` to manage token-tracked
+  disposal of already-obtained and non-reobtainable resources.
+- Added `ResourceToken.create` method
+- Optimized `AsyncResourceToken.create` to use `AsyncRootResourceToken`
+- Added `toToken` extension method for `Disposable` and `toAsyncToken` for
+  `AsyncDisposable` to allow easily creating tokens to manage their disposal.
+
 ## 4.0.0
 
 - \[BREAKING\] Updated `AsyncResourceToken` propagation to be synchronous as it
