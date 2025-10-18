@@ -24,4 +24,15 @@ class ResourceToken<T> extends DisposeToken {
   ResourceToken<T> propagate() => isDisposed
       ? throw StateError('Cannot propagate access from a disposed token.')
       : _propagator();
+
+  /// Creates a resource token for a resource loaded with [loadResource] that
+  /// will release the resource with [releaseResource] when the token and all
+  /// propagated tokens are disposed.
+  static ResourceToken<T> create<T>({
+    required T Function() loadResource,
+    required void Function(T) releaseResource,
+  }) => RootResourceToken<T>(
+    resource: loadResource(),
+    releaseResource: releaseResource,
+  );
 }
